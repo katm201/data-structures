@@ -1,6 +1,5 @@
 var Stack = function() { 
-  Stack.prototype = stackMethods;
-  var instance = Object.create(Stack.prototype);
+  var instance = Object.create(stackMethods);
   instance._size = 0;
   instance._storage = {};
   return instance;
