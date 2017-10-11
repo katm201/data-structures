@@ -11,12 +11,14 @@ var stackMethods = {
     this._size++;
     this._storage[this._size] = value;
   },
-
-  //pop
-    //check to see if size is greater than 0
-      //if it is create a local variable
-      //decrease the size
-      //return the local variable
+  
+  pop: function() {
+    if (this._size > 0) {
+      let lastValue = this._storage[this._size];
+      this._size--;
+      return lastValue;
+    }
+  },
 
   size: function() {
     return this._size;
