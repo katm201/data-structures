@@ -7,11 +7,10 @@ var Stack = function() {
 };
 
 var stackMethods = {
-
-  
-  //push
-    //increase the size
-    //add the value to the object based on size for the key
+  push: function(value) {
+    this._size++;
+    this._storage[this._size] = value;
+  },
 
   //pop
     //check to see if size is greater than 0
