@@ -18,7 +18,14 @@ Queue.prototype.enqueue = function(value) {
   this._storage[this._max] = value;
 };
 
-Queue.prototype.dequeue = function(value) {};
+Queue.prototype.dequeue = function(value) {
+  if (this._size > 0) {
+    let oldestValue = this._storage[this._min];
+    this._min++;
+    this._size--;
+    return oldestValue;
+  }
+};
 
 Queue.prototype.size = function(value) {
   return this._size;
