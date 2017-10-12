@@ -12,7 +12,7 @@ var Queue = function() {
   // Implement the methods below
 
   someInstance.enqueue = function(value) {
-    if (_size === 0) {
+    if (_min === 0) {
       _min++;
     }
 
@@ -22,17 +22,20 @@ var Queue = function() {
   };
 
   someInstance.dequeue = function() {
-    //check to see if size if greater than 0
-      //store value of removed value in local variable
-      //increase minimum
-      //decrease size
-      //return local value
-    
+    if (_size > 0) { 
+      
+      let oldestValue = storage[_min];
+      if (oldestValue === undefined) {
+        debugger;
+      }
+      _min++;
+      _size--;
+      return oldestValue;
+    }
   };
 
   someInstance.size = function() {
     return _size;
-
   };
 
   return someInstance;
