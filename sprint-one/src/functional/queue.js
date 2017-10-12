@@ -12,17 +12,21 @@ var Queue = function() {
   // Implement the methods below
 
   someInstance.enqueue = function(value) {
-    
-    //increase size and mmaximum
-    //assign value to object with maximum as keyt
+    if (_size === 0) {
+      _min++;
+    }
 
+    _size++;
+    _max++;
+    storage[_max] = value;
   };
 
   someInstance.dequeue = function() {
-    //store value of removed value in local variable
-    //increase minimum
-    //decrease size
-    //return local value
+    //check to see if size if greater than 0
+      //store value of removed value in local variable
+      //increase minimum
+      //decrease size
+      //return local value
     
   };
 
