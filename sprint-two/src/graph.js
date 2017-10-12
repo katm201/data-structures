@@ -2,23 +2,24 @@
 
 // Instantiate a new graph
 var Graph = function() {
-  //create a storage object
+  this.storage = {};
     //each new node's value is the key
     //an array of it's 'edges' is the value;
 };
 
 // Add a node to the graph, passing in the node's value.
 Graph.prototype.addNode = function(node) {
-  //putting a new key/value pair on the storage object
-    //key: node value
-    //value: [];
+  this.storage[node] = [];
 };
 
 // Return a boolean value indicating if the value passed to contains is represented in the graph.
 Graph.prototype.contains = function(node) {
-  //loop over the keys in the storage object to see if any keys match the target node
-    // if so, return true
-  //otherwise return false
+  for (var key in this.storage) {
+    if (parseInt(key) === node) {
+      return true;
+    }
+  }
+  return false;
 };
 
 // Removes a node from the graph.
