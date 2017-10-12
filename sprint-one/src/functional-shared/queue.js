@@ -24,7 +24,15 @@ var queueMethods = {
     this._storage[this._max] = value;
   },
 
-  //dequeue
+  dequeue: function() {
+    if (this._size > 0) {
+      let oldestValue = this._storage[this._min];
+      this._min++;
+      this._size--;
+      return oldestValue;
+    }
+  },
+
   size: function() {
     debugger;
     return this._size;
