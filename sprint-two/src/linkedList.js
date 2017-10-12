@@ -12,10 +12,16 @@ var LinkedList = function() {
       let oldTail = list.tail;
       list.tail = newNode;
       oldTail.next = newNode;
-
+    }
   };
 
   list.removeHead = function() {
+    if (list.head) {
+      let oldHead = list.head;
+      list.head = oldHead.next;
+      oldHead.next = null;
+      return oldHead.value;
+    }
   };
 
   list.contains = function(target) {
@@ -23,6 +29,8 @@ var LinkedList = function() {
 
   return list;
 };
+
+
 
 var Node = function(value) {
   var node = {};
@@ -32,6 +40,8 @@ var Node = function(value) {
 
   return node;
 };
+
+
 
 /*
  * Complexity: What is the time complexity of the above functions?
