@@ -14,7 +14,16 @@ var Queue = function() {
 };
 
 var queueMethods = {
-  //enqueue
+  enqueue: function(value) {
+    if (this._min === 0) {
+      this._min++;
+    }
+
+    this._max++;
+    this._size++;
+    this._storage[this._max] = value;
+  },
+
   //dequeue
   size: function() {
     debugger;
