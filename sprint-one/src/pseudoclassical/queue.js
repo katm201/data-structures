@@ -5,11 +5,18 @@ var Queue = function() {
   this._min = 0;
   this._max = 0;
   this._storage = {};
-
 };
 
 
-Queue.prototype.enqueue = function(value) {};
+Queue.prototype.enqueue = function(value) {
+  if (this._min === 0) {
+    this._min++;
+  }
+
+  this._size++;
+  this._max++;
+  this._storage[this._max] = value;
+};
 
 Queue.prototype.dequeue = function(value) {};
 
