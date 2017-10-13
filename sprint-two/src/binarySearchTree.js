@@ -29,10 +29,7 @@ BinarySearchTree.prototype.insert = function(newValue, node) {
 };
 
 BinarySearchTree.prototype.contains = function(target, node) {
-  //accepts a value and returns a boolean reflecting whether or not the value is contained in the tree
   node = node || this;
-  //if target === node.value
-    //return true;
   if (target === node.value) {
     return true;
   } else if (target < node.value) {
@@ -51,8 +48,15 @@ BinarySearchTree.prototype.contains = function(target, node) {
   return this.contains(target, node);
 };
 
-BinarySearchTree.prototype.depthFirstLog = function(callback) {
-  //accepts a callback and executes it on every value contained in the tree
+BinarySearchTree.prototype.depthFirstLog = function(callback, node) {
+  node = node || this;
+  callback(node.value);
+  if (node.left) {
+    this.depthFirstLog(callback, node.left);
+  } 
+  if (node.right) {
+    this.depthFirstLog(callback, node.right);
+  }
 };
 
 /*
