@@ -1,4 +1,3 @@
-                                                                                                                                                                                                                                                                                                                                
 
 var HashTable = function() {
   this._limit = 8;
@@ -7,17 +6,19 @@ var HashTable = function() {
 
 HashTable.prototype.insert = function(k, v) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  if (this._storage[index]) {
-    var bucket = this._storage[index];
-    for (var i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === k) {
-        bucket[i][1] = v;
-      } else {
-        bucket.push([k, v]);
-      }
-    } 
-  } else {
+  var found = false;
+  
+  this.traverse(k, function(key, bucket, bucketIndex, value) {
+    if (bucket[bucketIndex][0] === key) {
+      bucket[bucketIndex][1] = value;
+    } else {
+      bucket.push([key, value]);
+    }
+    found = true;
+  }, v);
+  if (!found) {
     var bucket = [];
+    var index = getIndexBelowMaxForKey(k, this._limit);
     this._storage[index] = bucket;
     bucket.push([k, v]);
   }
@@ -32,18 +33,6 @@ HashTable.prototype.retrieve = function(k) {
   });
   return result;
 };
-
-// HashTable.prototype.remove = function(k) {
-//   var index = getIndexBelowMaxForKey(k, this._limit);
-//   var bucket = this._storage[index];
-//   if (bucket) {
-//     for (var i = 0; i < bucket.length; i++) {
-//       if (bucket[i][0] === k) {
-//         bucket.splice(i, 1);
-//       }
-//     }
-//   }
-// };
 
 HashTable.prototype.remove = function(k) {
   this.traverse(k, function(key, bucket, bucketIndex) {
