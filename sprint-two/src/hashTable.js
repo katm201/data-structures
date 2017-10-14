@@ -14,7 +14,6 @@ HashTable.prototype.insert = function(k, v) {
       bucket[bucketIndex][1] = value;
     } else {
       bucket.push([key, value]);
-      this.toupleCounter++;
     }
     found = true;
   }, v);
@@ -23,8 +22,9 @@ HashTable.prototype.insert = function(k, v) {
     var index = getIndexBelowMaxForKey(k, this._limit);
     this._storage[index] = bucket;
     bucket.push([k, v]);
-    this.toupleCounter++;
   }
+
+  this.toupleCounter++;
 
   if (this.toupleCounter / this._limit >= 0.75) {
     this.tableRebalancer('increase'); 
@@ -33,7 +33,7 @@ HashTable.prototype.insert = function(k, v) {
 };
 
 HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
-
+  
   if (increaseOrDecrease === 'increase') {
     var oldStorage = this._storage;
     this._limit = this._limit * 2;
@@ -43,12 +43,15 @@ HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
   //if argument is decrease
     //half the size
 
-
-  for (var i = 0; i < oldStorage.length; i++) {
-    var bucket = oldStorage[i];
-    if (bucket) {
-      for (var j = 0; j < bucket.length; j++) {
-        this.insert(bucket[j][0], bucket[j][1]);
+  this.toupleCounter = 0;
+  
+  for (var key in oldStorage) {
+    if (typeof oldStorage[key] !== 'function') {
+      var bucket = oldStorage[key];
+      if (bucket) {
+        for (var i = 0; i < bucket.length; i++) {
+          this.insert(bucket[i][0], bucket[i][1]);
+        }
       }
     }
   }
