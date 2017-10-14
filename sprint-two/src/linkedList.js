@@ -38,13 +38,12 @@ var LinkedList = function() {
   return list;
 };
 
-
-
 var Node = function(value) {
   var node = {};
 
   node.value = value;
   node.next = null;
+  node.previous = null; //note: for doublyLinkedLists only!
 
   return node;
 };
