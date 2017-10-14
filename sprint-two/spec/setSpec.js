@@ -30,4 +30,15 @@ describe('set', function() {
     expect(set.contains('Donald Glover')).to.equal(false);
   });
 
+  it('should add non-string values to a set', function() {
+    set.add(1);
+    set.add(2);
+    set.add(false);
+    set.add(true);
+    expect(set.contains(1)).to.equal(true);
+    expect(set.contains(2)).to.equal(true);
+    expect(set.contains(true)).to.equal(true);
+    expect(set.contains(false)).to.equal(true);
+  });
+
 });
