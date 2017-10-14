@@ -29,7 +29,6 @@ HashTable.prototype.insert = function(k, v) {
   if (this.toupleCounter / this._limit >= 0.75) {
     this.tableRebalancer('increase'); 
   }
-
 };
 
 HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
@@ -40,9 +39,14 @@ HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
     this._storage = LimitedArray(this._limit);
   }
 
-  //if argument is decrease
-    //half the size
+  if (increaseOrDecrease === 'decrease') {
+    debugger;
+    var oldStorage = this._storage;
+    this._limit = this._limit / 2;
+    this._storage = LimitedArray(this._limit);
+  }
 
+  
   this.toupleCounter = 0;
   
   for (var key in oldStorage) {
@@ -73,10 +77,16 @@ HashTable.prototype.remove = function(k) {
   this.bucketTraverse(k, function(key, bucket, bucketIndex) {
     if (bucket[bucketIndex][0] === key) {
       bucket.splice(bucketIndex, 1);
-      //decrease the count
+      
     }
   });
+  
+  this.toupleCounter--;
 
+  if ((this._limit / 2 >= 8) && (this.toupleCounter / this._limit <= 0.25)) {
+    this.tableRebalancer('decrease'); 
+  }
+  
 };
 
 HashTable.prototype.bucketTraverse = function(k, func, v) {
@@ -89,12 +99,6 @@ HashTable.prototype.bucketTraverse = function(k, func, v) {
     }
   }
 };
-
-
-/*To prevent excessive collisions, make your hashTable double in size as soon as 75 percent of the spaces have been filled
-
-To save space, make sure the hashTable halves in size when space usage falls below 25 percent*/
-
 
 /*
  * Complexity: What is the time complexity of the above functions?
