@@ -12,7 +12,7 @@ setPrototype.add = function(item) {
 
 setPrototype.contains = function(item) {
   for (var key in this._storage) {
-    if (key === item) {
+    if (this._storage[key] === item) {
       return true;
     }
   }
