@@ -33,7 +33,7 @@ var HashTable = function() {
 
 HashTable.prototype.insert = function(k, v) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index)
+  var bucket = this._storage.get(index);
   this._counter++;
   
   if (bucket) {
@@ -94,14 +94,29 @@ HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
 
 
 
+// HashTable.prototype.retrieve = function(k) {
+//   var result; 
+//   this.bucketTraverse(k, function(key, bucket, bucketIndex) {
+//     if (bucket[bucketIndex][0] === key) {
+//       result = bucket[bucketIndex][1];
+//     }
+//   });
+//   return result;
+// };
+
 HashTable.prototype.retrieve = function(k) {
-  var result; 
-  this.bucketTraverse(k, function(key, bucket, bucketIndex) {
-    if (bucket[bucketIndex][0] === key) {
-      result = bucket[bucketIndex][1];
+  var index = getIndexBelowMaxForKey(k, this._limit);
+  var bucket = this._storage.get(index);
+  if (bucket) {
+    for (var i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === k) {
+        return bucket[i][1];
+      }
     }
-  });
-  return result;
+    //loop over the bucket
+      //if bucket[i][0] === k
+        //return bucket[i][1]
+  }
 };
 
 HashTable.prototype.remove = function(k) {
