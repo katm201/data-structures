@@ -82,6 +82,17 @@ HashTable.prototype.remove = function(k) {
   }
 };
 
+HashTable.prototype.helper = function(bucket, foundFn) {
+  var result;
+  for (var i = 0; i < bucket.length; i++) {
+    var touple = bucket[i];
+    if (touple[0] === k) {
+      result = foundFn(touple);
+    }
+  }
+  return result;
+}
+
 HashTable.prototype.bucketTraverse = function(k, func, v) {
   func = func || _.identity;
   var index = getIndexBelowMaxForKey(k, this._limit);
