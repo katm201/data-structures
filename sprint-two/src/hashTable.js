@@ -47,15 +47,7 @@ HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
 };
 
 HashTable.prototype.retrieve = function(k) {
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  if (bucket) {
-    for (var i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === k) {
-        return bucket[i][1];
-      }
-    }
-  }
+  return this.helper(k);
 };
 
 HashTable.prototype.remove = function(k) {
