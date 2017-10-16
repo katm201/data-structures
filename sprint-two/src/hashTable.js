@@ -6,48 +6,76 @@ var HashTable = function() {
 };
 
 HashTable.prototype.insert = function(k, v) {
-  return this.retrieve(k, function(bucket, index, value) {
+  
+  var result = this.retrieve(k, function(bucket, index, value) {
     bucket[index][1] = value;
     return bucket;
   }, v, function(bucket, key, value) {
     bucket = bucket || [];
     bucket.push([key, value]);
     return bucket;
-  })
+  });
+
+  this._counter++;
+
+  if (this._counter / this._limit >= 0.75) {
+    this.tableRebalancer('increase');
+  }
+
+  return result;
 };
 
-HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
+// HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
   
+//   if (increaseOrDecrease === 'increase') {
+//     var oldStorage = this._storage;
+//     this._limit = this._limit * 2;
+//     this._storage = LimitedArray(this._limit);
+//   }
+
+//   if (increaseOrDecrease === 'decrease') {
+//     debugger;
+//     var oldStorage = this._storage;
+//     this._limit = this._limit / 2;
+//     this._storage = LimitedArray(this._limit);
+//   }
+
+  
+//   this._counter = 0;
+  
+//   for (var key in oldStorage) {
+//     if (typeof oldStorage[key] !== 'function') {
+//       var bucket = oldStorage[key];
+//       if (bucket) {
+//         for (var i = 0; i < bucket.length; i++) {
+//           this.insert(bucket[i][0], bucket[i][1]);
+//         }
+//       }
+//     }
+//   }
+// };
+
+HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
   if (increaseOrDecrease === 'increase') {
-    var oldStorage = this._storage;
     this._limit = this._limit * 2;
-    this._storage = LimitedArray(this._limit);
   }
 
   if (increaseOrDecrease === 'decrease') {
-    debugger;
-    var oldStorage = this._storage;
     this._limit = this._limit / 2;
-    this._storage = LimitedArray(this._limit);
   }
 
-  
-  this._counter = 0;
-  
-  for (var key in oldStorage) {
-    if (typeof oldStorage[key] !== 'function') {
-      var bucket = oldStorage[key];
-      if (bucket) {
-        for (var i = 0; i < bucket.length; i++) {
-          this.insert(bucket[i][0], bucket[i][1]);
-        }
-      }
-    }
-  }
+  var newLimitedArray = LimitedArray(this._limit)
+
+  this._storage.each(function(bucket, index, storage) {
+    newLimitedArray.set(index, bucket);
+  });
+
+  this._storage = newLimitedArray;
 };
 
 HashTable.prototype.remove = function(k) {
   return this.retrieve(k, function(bucket, index) {
+    this._counter--;
     bucket.splice(index, 1);
     return bucket;
   });
