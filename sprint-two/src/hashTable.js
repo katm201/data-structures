@@ -82,17 +82,6 @@ HashTable.prototype.retrieve = function(k, foundFn, v, notFoundFn) {
   
 }
 
-HashTable.prototype.bucketTraverse = function(k, func, v) {
-  func = func || _.identity;
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage[index];
-  if (bucket) {
-    for (var i = 0; i < bucket.length; i++) {
-      func(k, bucket, i, v);
-    }
-  }
-};
-
 /*
  * Complexity: What is the time complexity of the above functions?
  */
