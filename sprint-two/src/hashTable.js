@@ -6,7 +6,7 @@ var HashTable = function() {
 };
 
 HashTable.prototype.insert = function(k, v) {
-  return this.helper(k, function(bucket, index, value) {
+  return this.retrieve(k, function(bucket, index, value) {
     bucket[index][1] = value;
     return bucket;
   }, v, function(bucket, key, value) {
@@ -46,20 +46,17 @@ HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
   }
 };
 
-HashTable.prototype.retrieve = function(k) {
-  return this.helper(k);
-};
-
 HashTable.prototype.remove = function(k) {
-  return this.helper(k, function(bucket, index) {
+  return this.retrieve(k, function(bucket, index) {
     bucket.splice(index, 1);
     return bucket;
   });
 };
 
-HashTable.prototype.helper = function(k, foundFn, v, notFoundFn) {
+HashTable.prototype.retrieve = function(k, foundFn, v, notFoundFn) {
   var index = getIndexBelowMaxForKey(k, this._limit);
   var bucket = this._storage.get(index);
+  
   foundFn = foundFn || _.identity;
 
   var found = false;
@@ -69,7 +66,7 @@ HashTable.prototype.helper = function(k, foundFn, v, notFoundFn) {
       if (bucket[i][0] === k) {
         found = true;
         var oldValue = bucket[i][1]
-        debugger;
+        
         bucket = foundFn(bucket, i, v);
 
         this._storage.set(index, bucket);
