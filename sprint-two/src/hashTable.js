@@ -5,8 +5,11 @@ var HashTable = function() {
   this._storage = LimitedArray(this._limit);
 };
 
-HashTable.prototype.insert = function(k, v) {
-  
+HashTable.prototype.insert = function(k, v, rebalancerOK) {
+  if (rebalancerOK === undefined) {
+    rebalancerOK = true;
+  }
+
   var result = this.retrieve(k, function(bucket, index, value) {
     bucket[index][1] = value;
     return bucket;
@@ -18,44 +21,16 @@ HashTable.prototype.insert = function(k, v) {
 
   this._counter++;
 
-  if (this._counter / this._limit >= 0.75) {
+  if (rebalancerOK && (this._counter / this._limit > 0.75)) {
     this.tableRebalancer('increase');
   }
 
   return result;
 };
 
-// HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
-  
-//   if (increaseOrDecrease === 'increase') {
-//     var oldStorage = this._storage;
-//     this._limit = this._limit * 2;
-//     this._storage = LimitedArray(this._limit);
-//   }
-
-//   if (increaseOrDecrease === 'decrease') {
-//     debugger;
-//     var oldStorage = this._storage;
-//     this._limit = this._limit / 2;
-//     this._storage = LimitedArray(this._limit);
-//   }
-
-  
-//   this._counter = 0;
-  
-//   for (var key in oldStorage) {
-//     if (typeof oldStorage[key] !== 'function') {
-//       var bucket = oldStorage[key];
-//       if (bucket) {
-//         for (var i = 0; i < bucket.length; i++) {
-//           this.insert(bucket[i][0], bucket[i][1]);
-//         }
-//       }
-//     }
-//   }
-// };
-
 HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
+  this._counter = 0;
+
   if (increaseOrDecrease === 'increase') {
     this._limit = this._limit * 2;
   }
@@ -64,21 +39,37 @@ HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
     this._limit = this._limit / 2;
   }
 
-  var newLimitedArray = LimitedArray(this._limit)
+  var oldLimitedArray = this._storage;
+  this._storage = LimitedArray(this._limit);
 
-  this._storage.each(function(bucket, index, storage) {
-    newLimitedArray.set(index, bucket);
+  var table = this;
+
+  oldLimitedArray.each(function(bucket, index, storage) {
+    if (bucket) {
+      for (var i = 0; i < bucket.length; i++) {
+        var key = bucket[i][0];
+        var value = bucket[i][1];
+        table.insert.call(table, key, value, false);
+      }
+    }
   });
-
-  this._storage = newLimitedArray;
 };
 
 HashTable.prototype.remove = function(k) {
-  return this.retrieve(k, function(bucket, index) {
-    this._counter--;
+  var result = this.retrieve(k, function(bucket, index) {
     bucket.splice(index, 1);
     return bucket;
   });
+
+  if (result) {
+    this._counter--;
+  }
+
+  if (this._counter / this._limit < 0.25) {
+    this.tableRebalancer('decrease');
+  }
+
+  return result;
 };
 
 HashTable.prototype.retrieve = function(k, foundFn, v, notFoundFn) {
@@ -96,8 +87,8 @@ HashTable.prototype.retrieve = function(k, foundFn, v, notFoundFn) {
         var oldValue = bucket[i][1]
         
         bucket = foundFn(bucket, i, v);
-
         this._storage.set(index, bucket);
+
         return oldValue;
       }
     }
@@ -107,7 +98,6 @@ HashTable.prototype.retrieve = function(k, foundFn, v, notFoundFn) {
     bucket = notFoundFn(bucket, k, v)
     this._storage.set(index, bucket);
   }
-  
 }
 
 /*
