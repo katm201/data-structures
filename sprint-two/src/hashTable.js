@@ -58,19 +58,26 @@ HashTable.prototype.retrieve = function(k) {
   }
 };
 
+// HashTable.prototype.remove = function(k) {
+//   var index = getIndexBelowMaxForKey(k, this._limit);
+//   var bucket = this._storage.get(index);
+//   if (bucket) {
+//     for (var i = 0; i < bucket.length; i++) {
+//       if (bucket[i][0] === k) {
+//         var oldValue = bucket[i][1];
+//         bucket.splice(i, 1);
+//         this._counter--;
+//         return oldValue;
+//       }
+//     }
+//   }
+// };
+
 HashTable.prototype.remove = function(k) {
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  if (bucket) {
-    for (var i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === k) {
-        var oldValue = bucket[i][1];
-        bucket.splice(i, 1);
-        this._counter--;
-        return oldValue;
-      }
-    }
-  }
+  return this.helper(k, function(bucket, index) {
+    bucket.splice(index, 1);
+    return bucket;
+  });
 };
 
 HashTable.prototype.helper = function(k, foundFn, v, notFoundFn) {
