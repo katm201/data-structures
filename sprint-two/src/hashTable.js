@@ -6,23 +6,14 @@ var HashTable = function() {
 };
 
 HashTable.prototype.insert = function(k, v) {
-  var index = getIndexBelowMaxForKey(k, this._limit);
-  var bucket = this._storage.get(index);
-  this._counter++;
-  
-  if (bucket) {
-    for (var i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === k) {
-        var oldValue = bucket[i][1];
-        bucket[i][1] = v;
-        return oldValue;
-      }
-    }
-  } else {
-    bucket = [];
-    this._storage.set(index, bucket);
-  }
-  bucket.push([k, v]);
+  return this.helper(k, function(bucket, index, value) {
+    bucket[index][1] = value;
+    return bucket;
+  }, v, function(bucket, key, value) {
+    bucket = bucket || [];
+    bucket.push([key, value]);
+    return bucket;
+  })
 };
 
 HashTable.prototype.tableRebalancer = function(increaseOrDecrease) {
@@ -82,15 +73,31 @@ HashTable.prototype.remove = function(k) {
   }
 };
 
-HashTable.prototype.helper = function(bucket, foundFn) {
-  var result;
-  for (var i = 0; i < bucket.length; i++) {
-    var touple = bucket[i];
-    if (touple[0] === k) {
-      result = foundFn(touple);
+HashTable.prototype.helper = function(k, foundFn, v, notFoundFn) {
+  var index = getIndexBelowMaxForKey(k, this._limit);
+  var bucket = this._storage.get(index);
+
+  var found = false;
+  
+  if (bucket) {
+    for (var i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === k) {
+        found = true;
+        var oldValue = bucket[i][1]
+        debugger;
+        bucket = foundFn(bucket, i, v);
+
+        this._storage.set(index, bucket);
+        return oldValue;
+      }
     }
   }
-  return result;
+
+  if (notFoundFn && !found) {
+    bucket = notFoundFn(bucket, k, v)
+    this._storage.set(index, bucket);
+  }
+  
 }
 
 HashTable.prototype.bucketTraverse = function(k, func, v) {
