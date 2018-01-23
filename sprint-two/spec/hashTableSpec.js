@@ -62,7 +62,6 @@ describe('hashTable', function() {
       hashTable.insert(firstName, lastName);
       expect(hashTable.retrieve(firstName)).to.equal(lastName);
     });
-    //debugger;
     expect(hashTable._limit).to.equal(16);
   });
 
@@ -73,7 +72,6 @@ describe('hashTable', function() {
       hashTable.insert(firstName, lastName);
       expect(hashTable.retrieve(firstName)).to.equal(lastName);
     });
-    debugger;
     expect(hashTable._limit).to.equal(16);
     hashTable.remove('George');
     hashTable.remove('Dr.');
@@ -81,7 +79,6 @@ describe('hashTable', function() {
     hashTable.remove('John');
     hashTable.remove('Mr.');
     console.log(hashTable._counter);
-    debugger;
     expect(hashTable._limit).to.equal(8);
   });
 });
